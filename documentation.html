@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Student Management System - API Documentation</title>
+    <title>Todo List API Documentation</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 2em; background: #f8f9fa; }
         h1, h2, h3 { color: #2c3e50; }
@@ -14,9 +14,9 @@
     </style>
 </head>
 <body>
-    <h1>Student Management System - API Documentation</h1>
+    <h1>Todo List API Documentation</h1>
     <p>
-        The Student Management System is a Django REST Framework-based backend for managing students, courses, authentication, and profile images. It features JWT authentication, Cloudinary integration for image hosting, and robust password management.
+        The Todo List API is a Django REST Framework-based backend for managing tasks (todos) with user authentication. It supports JWT authentication, CRUD operations for todos, and user management.
     </p>
 
     <div class="section">
@@ -24,28 +24,20 @@
         <ul>
             <li>Base URL: <code>/api/</code></li>
             <li>Authentication: JWT (Bearer token)</li>
-            <li>Image Hosting: Cloudinary</li>
-            <li>Database: MySQL or SQLite</li>
+            <li>Database: SQLite (default) or MySQL</li>
         </ul>
     </div>
 
     <div class="section">
         <h2>Authentication Endpoints</h2>
-
         <div class="endpoint">
             <span class="method">POST</span> <code>/api/register/</code>
-            <p>Register a new student.</p>
+            <p>Register a new user.</p>
             <div class="payload">
                 <strong>Payload:</strong>
                 <pre>{
-  "email": "student@example.com",
-  "first_name": "John",
-  "last_name": "Doe",
-  "middle_name": "A",
-  "city": "Lagos",
-  "state": "Lagos",
-  "country_name": "Nigeria",
-  "primary_phone": "08012345678",
+  "username": "user1",
+  "email": "user1@example.com",
   "password": "yourpassword"
 }</pre>
             </div>
@@ -53,31 +45,29 @@
                 <strong>Response:</strong>
                 <pre>{
   "id": 1,
-  "email": "student@example.com",
-  ...
+  "username": "user1",
+  "email": "user1@example.com"
 }</pre>
             </div>
         </div>
-
         <div class="endpoint">
             <span class="method">POST</span> <code>/api/login/</code>
             <p>Authenticate and receive JWT tokens.</p>
             <div class="payload">
                 <strong>Payload:</strong>
                 <pre>{
-  "email": "student@example.com",
+  "username": "user1",
   "password": "yourpassword"
 }</pre>
             </div>
             <div class="response">
                 <strong>Response:</strong>
                 <pre>{
-  "status": "success",
-  "student": { ...student fields... }
+  "access": "jwt-access-token",
+  "refresh": "jwt-refresh-token"
 }</pre>
             </div>
         </div>
-
         <div class="endpoint">
             <span class="method">POST</span> <code>/api/logout/</code>
             <p>Logout and blacklist the refresh token.</p>
@@ -86,7 +76,6 @@
                 <pre>{ "message": "Logged out successfully" }</pre>
             </div>
         </div>
-
         <div class="endpoint">
             <span class="method">POST</span> <code>/api/change-password/</code>
             <p>Change password (authenticated).</p>
@@ -102,20 +91,18 @@
                 <pre>{ "message": "Password updated successfully" }</pre>
             </div>
         </div>
-
         <div class="endpoint">
             <span class="method">POST</span> <code>/api/forgot-password/</code>
             <p>Send password reset email.</p>
             <div class="payload">
                 <strong>Payload:</strong>
-                <pre>{ "email": "student@example.com" }</pre>
+                <pre>{ "email": "user1@example.com" }</pre>
             </div>
             <div class="response">
                 <strong>Response:</strong>
                 <pre>{ "message": "Password reset email sent" }</pre>
             </div>
         </div>
-
         <div class="endpoint">
             <span class="method">POST</span> <code>/api/reset-password/</code>
             <p>Reset password using token.</p>
@@ -134,118 +121,61 @@
     </div>
 
     <div class="section">
-        <h2>Student Endpoints</h2>
+        <h2>Todo Endpoints</h2>
         <div class="endpoint">
-            <span class="method">GET</span> <code>/api/student/</code>
-            <p>List all students.</p>
+            <span class="method">GET</span> <code>/api/todos/</code>
+            <p>List all todos for the authenticated user.</p>
         </div>
         <div class="endpoint">
-            <span class="method">GET</span> <code>/api/student/{id}/</code>
-            <p>Retrieve a student by ID.</p>
-        </div>
-        <div class="endpoint">
-            <span class="method">PUT</span> <code>/api/student/{id}/</code>
-            <p>Update a student.</p>
+            <span class="method">POST</span> <code>/api/todos/</code>
+            <p>Create a new todo.</p>
             <div class="payload">
                 <strong>Payload:</strong>
                 <pre>{
-  "first_name": "Jane",
-  "last_name": "Doe",
-  ...
+  "title": "Buy groceries",
+  "description": "Milk, Bread, Eggs",
+  "completed": false
 }</pre>
             </div>
         </div>
         <div class="endpoint">
-            <span class="method">DELETE</span> <code>/api/student/{id}/</code>
-            <p>Delete a student.</p>
-        </div>
-    </div>
-
-    <div class="section">
-        <h2>Course Endpoints</h2>
-        <div class="endpoint">
-            <span class="method">GET</span> <code>/api/course/</code>
-            <p>List all courses.</p>
+            <span class="method">GET</span> <code>/api/todos/{id}/</code>
+            <p>Retrieve a todo by ID.</p>
         </div>
         <div class="endpoint">
-            <span class="method">POST</span> <code>/api/course/</code>
-            <p>Create a new course.</p>
+            <span class="method">PUT</span> <code>/api/todos/{id}/</code>
+            <p>Update a todo.</p>
             <div class="payload">
                 <strong>Payload:</strong>
                 <pre>{
-  "course_name": "Python",
-  "course_image": "file.jpg",
-  "course_duration": "3 months",
-  "course_fees": "50000",
-  "course_description": "Learn Python",
-  "number_of_months": 3
+  "title": "Buy groceries",
+  "description": "Milk, Bread, Eggs, Butter",
+  "completed": true
 }</pre>
             </div>
         </div>
         <div class="endpoint">
-            <span class="method">GET</span> <code>/api/course/{id}/</code>
-            <p>Retrieve a course by ID.</p>
-        </div>
-        <div class="endpoint">
-            <span class="method">PUT</span> <code>/api/course/{id}/</code>
-            <p>Update a course.</p>
-        </div>
-        <div class="endpoint">
-            <span class="method">DELETE</span> <code>/api/course/{id}/</code>
-            <p>Delete a course.</p>
+            <span class="method">DELETE</span> <code>/api/todos/{id}/</code>
+            <p>Delete a todo.</p>
         </div>
     </div>
 
     <div class="section">
-        <h2>Profile Image Endpoints</h2>
-        <div class="endpoint">
-            <span class="method">POST</span> <code>/api/profile-image/</code>
-            <p>Upload a profile image for a student.</p>
-            <div class="payload">
-                <strong>Payload (multipart/form-data):</strong>
-                <ul>
-                    <li><code>student</code>: Student ID</li>
-                    <li><code>image</code>: Image file</li>
-                </ul>
-            </div>
-            <div class="response">
-                <strong>Response:</strong>
-                <pre>{
-  "status": "success",
-  "data": {
-    "id": 1,
-    "student": 1,
-    "image_url": "https://res.cloudinary.com/your_cloud/image/upload/v1234567890/profile_images/abc123.jpg"
-  }
-}</pre>
-            </div>
-        </div>
-        <div class="endpoint">
-            <span class="method">PUT</span> <code>/api/profile-image/{id}/</code>
-            <p>Update profile image.</p>
-        </div>
-        <div class="endpoint">
-            <span class="method">DELETE</span> <code>/api/profile-image/{id}/</code>
-            <p>Delete profile image (removes from Cloudinary).</p>
-        </div>
-    </div>
-
-    <div class="section">
-        <h2>Security & Error Handling</h2>
+        <h2>Authorization</h2>
         <ul>
             <li>All protected endpoints require JWT authentication via <code>Authorization: Bearer &lt;token&gt;</code> header.</li>
-            <li>Passwords are securely hashed.</li>
-            <li>Profile images are stored and managed via Cloudinary.</li>
-            <li>Common errors: missing fields, authentication failure, image upload failure, integrity errors.</li>
+            <li>Register and login endpoints are public.</li>
+            <li>Each user can only access and manage their own todos.</li>
         </ul>
     </div>
 
     <div class="section">
         <h2>Setup & Usage</h2>
         <ol>
-            <li>Clone the repository and install dependencies.</li>
-            <li>Configure database and Cloudinary credentials in <code>settings.py</code>.</li>
-            <li>Run migrations and create a superuser.</li>
+            <li>Clone the repository and install dependencies: <code>pip install -r requirements.txt</code></li>
+            <li>Configure database settings in <code>settings.py</code> if needed.</li>
+            <li>Run migrations: <code>python manage.py migrate</code></li>
+            <li>Create a superuser: <code>python manage.py createsuperuser</code></li>
             <li>Start the server: <code>python manage.py runserver</code></li>
             <li>Access API at <code>http://127.0.0.1:8000/api/</code></li>
         </ol>
@@ -255,8 +185,7 @@
         <h2>Testing & Troubleshooting</h2>
         <ul>
             <li>Run tests: <code>python manage.py test</code></li>
-            <li>Image not displaying? Check Cloudinary credentials and upload status.</li>
-            <li>IntegrityError on profile image? Only one image per student; update instead of creating new.</li>
+            <li>Common errors: missing fields, authentication failure, integrity errors.</li>
             <li>JWT issues? Check token expiration and settings.</li>
         </ul>
     </div>
