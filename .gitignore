@@ -1,0 +1,22 @@
+<<<<<<< HEAD
+# Virtual environment
+venv/
+__pycache__/
+
+# Database
+*.sqlite3
+
+# Environment Variables
+.env
+
+# Django Secret Files
+*.pyc
+*.log
+*.pem
+
+# Migrations (optional)
+**/migrations/*.py
+!**/migrations/__init__.py
+
+# static files
+staticfiles/
